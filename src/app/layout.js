@@ -1,5 +1,4 @@
 'use client'
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import './globals.css'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -49,7 +48,6 @@ export default function RootLayout ({ children }) {
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.5, ease: 'easeInOut' }}
             >
-              <Header />
               {children}
               <Footer />
             </motion.div>
