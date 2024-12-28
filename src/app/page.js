@@ -149,37 +149,45 @@ export default function HeroSection () {
         </div>
         <div className='absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-2/5 aspect-[2/0.5] bg-gradient-to-br from-purple-600 to-violet-400 rounded-full opacity-50 blur-2xl'></div>
         <div className='relative mx-auto pt-32 pb-24 lg:max-w-7xl w-full px-5 sm:px-10 md:px-12 lg:px-5 text-center space-y-10'>
-          <h1 className='text-gray-900 dark:text-white mx-auto max-w-5xl font-bold text-4xl/tight sm:text-5xl/tight lg:text-6xl/tight xl:text-7xl/tight'>
-            We{' '}
-            <span className='text-purple-600 dark:text-violet-400'>Create</span>
-            , we{' '}
-            <span className='text-purple-600 dark:text-violet-400'>Design</span>
-            , we{' '}
-            <span className='text-purple-600 dark:text-violet-400'>Build</span>{' '}
-            Modern Software.
-          </h1>
-          <p className='text-gray-700 dark:text-gray-300 mx-auto max-w-2xl'>
-            <span className='text-purple-600 dark:text-violet-400'>
-              Crafting Innovative Software and Websites to Elevate Your
-              Business.
-            </span>{' '}
-            <br />
-            We combine expertise and creativity to deliver tailored digital
-            solutions that drive success.
-          </p>
-          <div className='flex justify-center items-center flex-wrap mx-auto gap-4'>
-            <Link
-              href='/contact'
-              className='flex items-center h-12 px-6 rounded-full bg-purple-600 text-white border border-purple-600'
-            >
-              Hire us Now
-            </Link>
-            <Link
-              href='/about'
-              className='flex items-center h-12 px-6 rounded-full bg-gray-100 hover:bg-gradient-to-br from-purple-600 to-violet-400 hover:text-white font-bold dark:bg-gray-900 text-purple-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800'
-            >
-              Learn more
-            </Link>
+          <div className='space-y-4'>
+            <h1 className='text-gray-900 dark:text-white mx-auto max-w-5xl font-bold text-4xl/tight sm:text-5xl/tight lg:text-6xl/tight xl:text-7xl/tight'>
+              We{' '}
+              <span className='text-purple-600 dark:text-violet-400'>
+                Create
+              </span>
+              , we{' '}
+              <span className='text-purple-600 dark:text-violet-400'>
+                Design
+              </span>
+              , we{' '}
+              <span className='text-purple-600 dark:text-violet-400'>
+                Build
+              </span>{' '}
+              Modern Software.
+            </h1>
+            <p className='text-gray-700 dark:text-gray-300 mx-auto max-w-2xl'>
+              <span className='text-purple-600 dark:text-violet-400'>
+                Crafting Innovative Software and Websites to Elevate Your
+                Business.
+              </span>{' '}
+              <br />
+              We combine expertise and creativity to deliver tailored digital
+              solutions that drive success.
+            </p>
+            <div className='flex justify-center items-center flex-wrap mx-auto gap-4'>
+              <Link
+                href='/contact'
+                className='flex items-center h-12 px-6 rounded-full bg-purple-600 text-white border border-purple-600'
+              >
+                Hire us Now
+              </Link>
+              <Link
+                href='/about'
+                className='flex items-center h-12 px-6 rounded-full bg-gray-100 hover:bg-gradient-to-br from-purple-600 to-violet-400 hover:text-white font-bold dark:bg-gray-900 text-purple-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800'
+              >
+                Learn more
+              </Link>
+            </div>
           </div>
           <div className='text-left grid lg:grid-cols-3 p-6 rounded-2xl bg-gradient-to-tr from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 border border-gray-100 dark:border-gray-800 max-w-2xl lg:max-w-5xl mx-auto lg:divide-x divide-y lg:divide-y-0 divide-gray-300 dark:divide-gray-800'>
             <div className='flex items-start gap-6 lg:pr-6 pb-6 lg:pb-0'>
