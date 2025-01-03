@@ -1,282 +1,270 @@
-'use client'
-import Link from 'next/link'
-import { useState } from 'react'
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetClose,
-  SheetHeader,
-  SheetFooter,
-  SheetTitle,
-  SheetDescription
-} from '@/components/ui/sheet'
-const Navbar = () => {
-  const [openNavbar, setOpenNavbar] = useState(false)
-  const toggleNavbar = () => {
-    setOpenNavbar(openNavbar => !openNavbar)
-  }
-  return (
-    <header className='absolute left-0 top-0 w-full flex items-center h-24 z-40'>
-      <nav className='relative mx-auto lg:max-w-7xl w-full px-5 sm:px-10 md:px-12 lg:px-5 flex gap-x-5 justify-between items-center'>
-        <div className='flex items-center min-w-max'>
-          <Link href='/' className='font-semibold flex items-center gap-x-2'>
-            <div className='flex items-center -space-x-3'>
-              <span className='h-6 aspect-square bg-purple-600 dark:bg-purple-500 rounded-full flex' />
-              <span className='h-6 aspect-square bg-violet-600 dark:bg-violet-400 blur rounded-full flex' />
-            </div>
-            <span className='text-lg font-bold text-gray-700 dark:text-gray-300'>
-              Schema
-            </span>
-          </Link>
-        </div>
-        <div
-          className={`
-                absolute top-full  left-0 bg-white dark:bg-gray-950 lg:!bg-transparent border-b border-gray-200 dark:border-gray-800 py-8 lg:py-0 px-5 sm:px-10 md:px-12 lg:px-0 lg:border-none lg:w-max lg:space-x-16 lg:top-0 lg:relative  lg:flex duration-300 lg:transition-none ease-linear
-                ${
-                  openNavbar
-                    ? 'translate-y-0 opacity-0 visible'
-                    : 'translate-y-10 opacity-0 invisible lg:visible  lg:translate-y-0 lg:opacity-100'
-                }
-            `}
-        >
-          <ul className='flex flex-col lg:flex-row gap-6 lg:items-center text-gray-700 dark:text-gray-300 lg:w-full lg:justify-center'>
-            <li>
-              <Link
-                href='/'
-                className='px-2 transition-colors font-bold  py-2.5 hover:text-purple-600 '
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='/about'
-                className='px-2 transition-colors font-bold  py-2.5 hover:text-purple-600 '
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='/services'
-                className='px-2 transition-colors font-bold  py-2.5 hover:text-purple-600 '
-              >
-                Services
-              </Link>
-            </li>
-          </ul>
-          <div className='flex flex-col sm:flex-row sm:items-center gap-4  lg:min-w-max mt-10 lg:mt-0'>
-            <Link
-              href='/contact'
-              className='flex items-center justify-center w-full sm:w-auto h-12 px-6 rounded-full bg-gray-100 hover:bg-gradient-to-br from-purple-600 to-violet-400 hover:text-white font-bold dark:bg-gray-900 text-purple-600 dark:text-gray-300 border border-gray-200 dark:border-gray-800'
-            >
-              Contact US
-            </Link>
-          </div>
-        </div>
-        <div className='flex items-center lg:hidden'>
-          <Sheet>
-            <SheetTrigger>Open</SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>
-                  <Link
-                    href='/'
-                    className='font-semibold flex items-center gap-x-2'
-                  >
-                    <div className='flex items-center -space-x-3'>
-                      <span className='h-6 aspect-square bg-purple-600 dark:bg-purple-500 rounded-full flex' />
-                      <span className='h-6 aspect-square bg-violet-600 dark:bg-violet-400 blur rounded-full flex' />
-                    </div>
-                    <span className='text-lg font-bold text-gray-700 dark:text-gray-300'>
-                      Schema
-                    </span>
-                  </Link>
-                </SheetTitle>
-              </SheetHeader>
-              <ul className='flex flex-col items-center p-5 gap-6 text-gray-700 dark:text-gray-300'>
-                <li>
-                  <Link
-                    href='/'
-                    className='transition-colors font-bold  py-2.5 hover:text-purple-600 '
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='/about'
-                    className='transition-colors font-bold  py-2.5 hover:text-purple-600 '
-                  >
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='/services'
-                    className='transition-colors font-bold  py-2.5 hover:text-purple-600 '
-                  >
-                    Services
-                  </Link>
-                </li>
-              </ul>
-              <div className='w-full h-[2px] bg-gray-200'></div>
-              <div>
-                <Link
-                  href='/contact'
-                  className='mt-6 flex items-center justify-center w-full sm:w-auto h-12 px-6 rounded-full bg-gray-100 hover:bg-gradient-to-br from-purple-600 to-violet-400 hover:text-white font-bold dark:bg-gray-900 text-purple-600 dark:text-gray-300 border border-gray-200 dark:border-gray-800'
-                >
-                  Contact US
-                </Link>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </nav>
-    </header>
-  )
-}
+"use client";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { FaRegSquarePlus } from "react-icons/fa6";
+import NewReportForm from "../components/NewReportForm";
 
-export default function HeroSection () {
+export default function Home() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [groupedReports, setGroupedReports] = useState({}); // Grouped by month and year
+  const [selectedDay, setSelectedDay] = useState(null); // Selected day
+  const [selectedShift, setSelectedShift] = useState(null); // Selected shift
+  const [tasks, setTasks] = useState([]); // Tasks for the selected shift
+  const [showModal, setShowModal] = useState(false); // To toggle the modal visibility
+  const [newReport, setNewReport] = useState({
+    day: "",
+    shift: "",
+    category: "",
+    task: "",
+  });
+
+  // Fetch and group reports by month and year
+  useEffect(() => {
+    fetch("http://localhost:3000/api/reports")
+      .then((res) => res.json())
+      .then((data) => {
+        const fixedDates = data.map((report) => ({
+          ...report,
+          report_date: new Date(Date.parse(report.report_date)), // Normalize the date parsing
+        }));
+
+        const groupedByMonth = fixedDates.reduce((acc, report) => {
+          const monthYear = `${report.report_date.toLocaleString("default", {
+            month: "long",
+          })} - ${report.report_date.getFullYear()}`;
+          acc[monthYear] = acc[monthYear] || [];
+          acc[monthYear].push(report);
+          return acc;
+        }, {});
+
+        // Sort months in descending order
+        const sortedGroupedReports = Object.fromEntries(
+          Object.entries(groupedByMonth).sort(
+            ([a], [b]) => new Date(b) - new Date(a)
+          )
+        );
+
+        setGroupedReports(sortedGroupedReports);
+      })
+      .catch((err) => console.error("Error fetching reports:", err));
+  }, []);
+
+  // Fetch tasks for a specific shift on a specific day
+  const fetchTasks = async (day, shift) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/reports/${day}/${shift}`
+      );
+      const taskData = await response.json();
+      setTasks(taskData);
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
+    }
+  };
+
+  // Handle day bar click
+  const handleDayClick = (day) => {
+    setSelectedDay(selectedDay === day ? null : day); // Toggle the selected day
+    setSelectedShift(null); // Reset selected shift
+    setTasks([]); // Clear tasks
+  };
+
+  // Handle shift click
+  const handleShiftClick = (shift, day) => {
+    setSelectedShift(selectedShift === shift ? null : shift); // Toggle the selected shift
+    if (selectedShift !== shift) {
+      fetchTasks(day, shift);
+    } else {
+      setTasks([]); // Clear tasks when toggled off
+    }
+  };
+
+  const getShiftColor = (shift) => {
+    const colors = {
+      Morning: "bg-red-400",
+      Evening: "bg-blue-300",
+      Night: "bg-yellow-400",
+    };
+    return colors[shift] || "bg-gray-200";
+  };
+
+  // Handle new report modal form submission
+  const handleReportSubmit = () => {
+    console.log("New Report:", newReport);
+    setShowModal(false);
+    // You can handle the API call here to add the report to the database
+  };
+
   return (
-    <>
-      <Navbar />
-      <section className='min-h-max bg-white dark:bg-gray-950'>
-        <div className='absolute top-0 inset-x-0 h-64 flex items-start'>
-          <div className='h-24 w-2/3 bg-gradient-to-br from-purple-500 opacity-20 blur-2xl dark:from-purple-700 dark:invisible dark:opacity-40'></div>
-          <div className='h-20 w-3/5 bg-gradient-to-r from-blue-600 opacity-40 blur-2xl dark:from-purple-700 dark:opacity-40'></div>
-        </div>
-        <div className='absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-2/5 aspect-[2/0.5] bg-gradient-to-br from-purple-600 to-violet-400 rounded-full opacity-50 blur-2xl'></div>
-        <div className='relative mx-auto pt-32 pb-24 lg:max-w-7xl w-full px-5 sm:px-10 md:px-12 lg:px-5 text-center space-y-10'>
-          <div className='space-y-4'>
-            <h1 className='text-gray-900 dark:text-white mx-auto max-w-5xl font-bold text-4xl/tight sm:text-5xl/tight lg:text-6xl/tight xl:text-7xl/tight'>
-              We{' '}
-              <span className='text-purple-600 dark:text-violet-400'>
-                Create
-              </span>
-              , we{' '}
-              <span className='text-purple-600 dark:text-violet-400'>
-                Design
-              </span>
-              , we{' '}
-              <span className='text-purple-600 dark:text-violet-400'>
-                Build
-              </span>{' '}
-              Modern Software.
-            </h1>
-            <p className='text-gray-700 dark:text-gray-300 mx-auto max-w-2xl'>
-              <span className='text-purple-600 dark:text-violet-400'>
-                Crafting Innovative Software and Websites to Elevate Your
-                Business.
-              </span>{' '}
-              <br />
-              We combine expertise and creativity to deliver tailored digital
-              solutions that drive success.
-            </p>
-            <div className='flex justify-center items-center flex-wrap mx-auto gap-4'>
-              <Link
-                href='/contact'
-                className='flex items-center h-12 px-6 rounded-full bg-purple-600 text-white border border-purple-600'
+    <div className="min-h-screen bg-gray-100 p-4">
+      <nav className="bg-blue-500 text-white p-4  flex justify-between items-center">
+        <h1 className="text-xl font-bold">Daily Reports</h1>
+        {/* Add new Report form pop-up button */}
+        <FaRegSquarePlus
+          className="w-10 h-10 cursor-pointer text-white hover:scale-105"
+          onClick={() => setIsVisible(true)}
+        />
+      </nav>
+
+      <NewReportForm isVisible={isVisible} setIsVisible={setIsVisible} />
+
+      {/* Modal to Add New Report */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Add New Report</h2>
+            <div>
+              <label className="block mb-2">Day</label>
+              <input
+                type="date"
+                value={newReport.day}
+                onChange={(e) =>
+                  setNewReport({ ...newReport, day: e.target.value })
+                }
+                className="w-full p-2 border rounded mb-4"
+              />
+              <label className="block mb-2">Shift</label>
+              <select
+                value={newReport.shift}
+                onChange={(e) =>
+                  setNewReport({ ...newReport, shift: e.target.value })
+                }
+                className="w-full p-2 border rounded mb-4"
               >
-                Hire us Now
-              </Link>
-              <Link
-                href='/about'
-                className='flex items-center h-12 px-6 rounded-full bg-gray-100 hover:bg-gradient-to-br from-purple-600 to-violet-400 hover:text-white font-bold dark:bg-gray-900 text-purple-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800'
+                <option value="">Select Shift</option>
+                <option value="Morning">Morning</option>
+                <option value="Evening">Evening</option>
+                <option value="Night">Night</option>
+              </select>
+              <label className="block mb-2">Category</label>
+              <input
+                type="text"
+                value={newReport.category}
+                onChange={(e) =>
+                  setNewReport({ ...newReport, category: e.target.value })
+                }
+                className="w-full p-2 border rounded mb-4"
+              />
+              <label className="block mb-2">Task</label>
+              <textarea
+                value={newReport.task}
+                onChange={(e) =>
+                  setNewReport({ ...newReport, task: e.target.value })
+                }
+                className="w-full p-2 border rounded mb-4"
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+                onClick={handleReportSubmit}
               >
-                Learn more
-              </Link>
-            </div>
-          </div>
-          <div className='text-left grid lg:grid-cols-3 p-6 rounded-2xl bg-gradient-to-tr from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 border border-gray-100 dark:border-gray-800 max-w-2xl lg:max-w-5xl mx-auto lg:divide-x divide-y lg:divide-y-0 divide-gray-300 dark:divide-gray-800'>
-            <div className='flex items-start gap-6 lg:pr-6 pb-6 lg:pb-0'>
-              <div className='w-10'>
-                <span className='p-3 rounded-xl bg-gray-200 dark:bg-gray-800 flex w-max text-gray-800 dark:text-gray-200'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    strokeWidth='1.5'
-                    stroke='currentColor'
-                    className='w-6 h-6'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5H18V15H4.5v-4.5zM3.75 18h15A2.25 2.25 0 0021 15.75v-6a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 9.75v6A2.25 2.25 0 003.75 18z'
-                    />
-                  </svg>
-                </span>
-              </div>
-              <div className='flex-1 space-y-1'>
-                <h2 className='text-gray-900 dark:text-white font-semibold text-lg'>
-                  We Design.
-                </h2>
-                <p className='text-gray-700 dark:text-gray-300 text-sm'>
-                  Bringing Your Ideas to Life with Precision and Creativity.
-                </p>
-              </div>
-            </div>
-            <div className='flex items-start gap-6 lg:px-6 py-6 lg:py-0'>
-              <div className='w-10'>
-                <span className='p-3 rounded-xl bg-gray-200 dark:bg-gray-800 flex w-max text-gray-800 dark:text-gray-200'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    strokeWidth='1.5'
-                    stroke='currentColor'
-                    className='w-6 h-6'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z'
-                    />
-                  </svg>
-                </span>
-              </div>
-              <div className='flex-1 space-y-1'>
-                <h2 className='text-gray-900 dark:text-white font-semibold text-lg'>
-                  We Develop.
-                </h2>
-                <p className='text-gray-700 dark:text-gray-300 text-sm'>
-                  Building solutions, one client at a time.
-                </p>
-              </div>
-            </div>
-            <div className='flex items-start gap-6 pt-6 lg:pt-0 lg:pl-6'>
-              <div className='w-10'>
-                <span className='p-3 rounded-xl bg-gray-200 dark:bg-gray-800 flex w-max text-gray-800 dark:text-gray-200'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    strokeWidth='1.5'
-                    stroke='currentColor'
-                    className='w-6 h-6'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5H18V15H4.5v-4.5zM3.75 18h15A2.25 2.25 0 0021 15.75v-6a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 9.75v6A2.25 2.25 0 003.75 18z'
-                    />
-                  </svg>
-                </span>
-              </div>
-              <div className='flex-1 space-y-1'>
-                <h2 className='text-gray-900 dark:text-white font-semibold text-lg'>
-                  We Deliver.
-                </h2>
-                <p className='text-gray-700 dark:text-gray-300 text-sm'>
-                  Your Next Big Idea Starts Here!
-                </p>
-              </div>
+                Submit
+              </button>
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
-      </section>
-    </>
-  )
+      )}
+
+      {/* Grouped Reports by Month */}
+      {Object.entries(groupedReports).map(([monthYear, reports]) => (
+        <div key={monthYear} className="mt-4">
+          {/* Month Title */}
+          <h2 className="text-2xl font-bold mb-4">{monthYear}</h2>
+
+          {/* Day Bars */}
+          {Object.entries(
+            reports.reduce((acc, report) => {
+              const date = report.report_date.toISOString().split("T")[0];
+              acc[date] = acc[date] || [];
+              acc[date].push(report);
+              return acc;
+            }, {})
+          ).map(([day, dayReports]) => (
+            <div key={day} className="bg-white shadow rounded mb-2">
+              {/* Day Bar */}
+              <motion.div
+                className={`p-4 cursor-pointer ${
+                  selectedDay === day ? "bg-blue-200" : "bg-blue-500 text-white"
+                }`}
+                whileHover={{ backgroundColor: "blue" }}
+                onClick={() => handleDayClick(day)}
+              >
+                <h3 className="text-lg font-bold">{day}</h3>
+              </motion.div>
+
+              {/* Shifts */}
+              {selectedDay === day && (
+                <div className="flex space-x-4 p-4">
+                  {["Morning", "Evening", "Night"].map((shift) => (
+                    <motion.div
+                      key={shift}
+                      className={`p-4 rounded cursor-pointer ${getShiftColor(
+                        shift
+                      )} ${
+                        selectedShift === shift ? "border-2 border-black" : ""
+                      }`}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() => handleShiftClick(shift, day)}
+                    >
+                      <h4 className="font-bold">{shift} Shift</h4>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              {/* Tasks */}
+              {selectedShift && selectedDay === day && (
+                <div className="mt-4 bg-gray-50 p-4 rounded shadow">
+                  {tasks.length > 0 ? (
+                    Object.entries(
+                      tasks.reduce((acc, task) => {
+                        acc[task.category] = acc[task.category] || [];
+                        acc[task.category].push(task);
+                        return acc;
+                      }, {})
+                    ).map(([category, categoryTasks]) => (
+                      <div key={category} className="mb-4">
+                        <h5 className="font-bold mb-2">{category}</h5>
+                        <table className="table-auto w-full border-collapse">
+                          <thead>
+                            <tr>
+                              <th className="border px-4 py-2 w-1/2">
+                                Action Taken
+                              </th>
+                              <th className="border px-4 py-2 w-1/2">Result</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {categoryTasks.map((task) => (
+                              <tr key={task.id}>
+                                <td className="border px-4 py-2 w-1/2 text-center">
+                                  {task.action_taken}
+                                </td>
+                                <td className="border px-4 py-2 w-1/2 text-center">
+                                  {task.result}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No tasks available for this shift.</p>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 }
