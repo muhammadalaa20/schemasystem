@@ -1,0 +1,24 @@
+-- CREATE DATABASE DailyReports;
+
+-- USE DailyReports;
+
+-- -- Table to store reports
+-- CREATE TABLE reports (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     report_date DATE NOT NULL,
+--     shift ENUM('Morning', 'Evening', 'Night') NOT NULL
+-- );
+
+-- -- Table to store tasks
+-- CREATE TABLE tasks (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     report_id INT NOT NULL,
+--     category ENUM('PC', 'Printer', 'VM3', 'PDA', 'RDT', 'Network', 'OCR', 'ERP', 'CATOS', 'EDI') NOT NULL,
+--     action_taken TEXT NOT NULL,
+--     result TEXT NOT NULL,
+--     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
+-- );
+-- ALTER TABLE reports ADD CONSTRAINT unique_report_date_shift UNIQUE (report_date, shift);
+
+select * from reports
+-- DELETE FROM reports WHERE id = 3;
