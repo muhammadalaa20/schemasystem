@@ -41,6 +41,7 @@ const NewReportForm = ({ isVisible, setIsVisible }) => {
     if (response.ok) {
       alert("Report saved successfully!");
       setIsVisible(false); // Hide the form after successful submission
+      window.location.reload();
     } else {
       alert("There was an error saving the report.");
     }

@@ -62,6 +62,31 @@ app.get("/api/reports/:id/tasks", (req, res) => {
   });
 });
 
+// API: Update the Tasks for a specific shift for a specific report
+app.put("/api/reports/:id/tasks", (req, res) => {
+  const { id } = req.params;
+  const { tasks } = req.body;
+  const query = `UPDATE tasks SET category = ?, action_taken = ?, result = ? WHERE report_id = ?`;
+  db.query(
+    query,
+    [tasks.category, tasks.actionTaken, tasks.result, id],
+    (err) => {
+      if (err) throw err;
+      res.status(200).send("Tasks updated successfully");
+    }
+  );
+});
+
+// API: Delete the Tasks for a specific shift for a specific report
+app.delete("/api/reports/:id/tasks", (req, res) => {
+  const { id } = req.params;
+  const query = `DELETE FROM tasks WHERE report_id = ?`;
+  db.query(query, [id], (err) => {
+    if (err) throw err;
+    res.status(200).send("Tasks deleted successfully");
+  });
+});
+
 app.post("/api/reports", (req, res) => {
   const { reportDate, shift, tasks } = req.body;
 

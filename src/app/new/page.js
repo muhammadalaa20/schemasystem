@@ -3,14 +3,17 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaRegSquarePlus } from "react-icons/fa6";
 import NewReportForm from "../../components/NewReportForm";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 export default function Home() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const [groupedReports, setGroupedReports] = useState({}); // Grouped by month and year
   const [selectedDay, setSelectedDay] = useState(null); // Selected day
   const [selectedShift, setSelectedShift] = useState(null); // Selected shift
   const [tasks, setTasks] = useState([]); // Tasks for the selected shift
   const [showModal, setShowModal] = useState(false); // To toggle the modal visibility
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [newReport, setNewReport] = useState({
     day: "",
     shift: "",
@@ -23,10 +26,22 @@ export default function Home() {
     fetch("http://localhost:3000/api/reports")
       .then((res) => res.json())
       .then((data) => {
-        const fixedDates = data.map((report) => ({
-          ...report,
-          report_date: new Date(Date.parse(report.report_date)), // Normalize the date parsing
-        }));
+        const fixedDates = data.map((report) => {
+          // Parse the date
+          const date = new Date(report.report_date);
+
+          // Add one day
+          date.setDate(date.getDate() + 1);
+
+          // Correct the overflow (e.g., if adding a day moves to the next month)
+          const correctedDate = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+          );
+
+          return { ...report, report_date: correctedDate };
+        });
 
         const groupedByMonth = fixedDates.reduce((acc, report) => {
           const monthYear = `${report.report_date.toLocaleString("default", {
@@ -95,6 +110,24 @@ export default function Home() {
     // You can handle the API call here to add the report to the database
   };
 
+  const handleDeleteClick = (id) => {
+    setDeleteTarget(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await fetch(`http://localhost:3000/api/reports/${deleteTarget}`, {
+        method: "DELETE",
+      });
+      setShowDeleteModal(false);
+      window.location.reload(); // Refresh the page after deletion
+    } catch (err) {
+      console.error("Error deleting report:", err);
+      setShowDeleteModal(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <nav className="bg-blue-500 text-white p-4  flex justify-between items-center">
@@ -107,6 +140,30 @@ export default function Home() {
       </nav>
 
       <NewReportForm isVisible={isVisible} setIsVisible={setIsVisible} />
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p className="mb-4">Are you sure you want to delete this report?</p>
+            <div className="flex justify-end">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+                onClick={confirmDelete}
+              >
+                Yes
+              </button>
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal to Add New Report */}
       {showModal && (
@@ -190,13 +247,19 @@ export default function Home() {
             <div key={day} className="bg-white shadow rounded mb-2">
               {/* Day Bar */}
               <motion.div
-                className={`p-4 cursor-pointer ${
+                className={`p-4 cursor-pointer flex justify-between items-center ${
                   selectedDay === day ? "bg-blue-200" : "bg-blue-500 text-white"
                 }`}
                 whileHover={{ backgroundColor: "blue" }}
                 onClick={() => handleDayClick(day)}
               >
                 <h3 className="text-lg font-bold">{day}</h3>
+                <button
+                  className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  onClick={() => handleDeleteClick(dayReports[0].id)}
+                >
+                  <FaTrash className="w-6 h-6" />
+                </button>
               </motion.div>
 
               {/* Shifts */}
